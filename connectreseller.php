@@ -198,65 +198,6 @@ function connectreseller_SaveRegistrarLock($params) {
     }
 	return $values;
 }
-
-function connectreseller_GetEmailForwarding($params){
-    require_once dirname(__FILE__) . "/connectresellerapi.php";
-    $testmode = (bool)$params['TestMode'];
-    $username = $testmode ? $params['SandboxUsername'] : $params['Username'];
-    $password = $testmode ? $params['SandboxPassword'] : $params['Password'];
-    $tld = $params['tld'];
-    $sld = $params['sld'];
-    try{
-        $request_params = array('DomainName' => $sld . '.' . $tld);
-        $api = new connectresellerRegistrarApi($username, $password, $testmode);
-        $response = $api->request("connectreseller.domains.dns.getEmailForwarding", $request_params);
-        $result = $api->parseResponse($response);
-
-        $forward = $result['DomainDNSGetEmailForwardingResult']['Forward'];
-        if (!isset($forward[0])) {
-            $forward = array($forward);
-        }
-
-        $values = array();
-        foreach ($forward as $v) {
-            $values[] = array(
-                'prefix'    => $v['@attributes']['mailbox'],
-                'forwardto' => $v['@value']
-            );
-        }
-    }
-    catch (Exception $e) {
-        $values['error'] = "An error occurred: " . $e->getMessage();
-    }
-    return $values;
-}
-
-function connectreseller_SaveEmailForwarding($params){
-    require_once dirname(__FILE__) . "/connectresellerapi.php";
-
-    $testmode = (bool)$params['TestMode'];
-    $username = $testmode ? $params['SandboxUsername'] : $params['Username'];
-    $password = $testmode ? $params['SandboxPassword'] : $params['Password'];
-    $tld = $params['tld'];
-    $sld = $params['sld'];
-    try{
-        $request_params = array('DomainName' => $sld . '.' . $tld);
-        foreach ($params['prefix'] AS $k => $v) {
-            if (!empty($params['prefix'][$k]) && !empty($params['forwardto'][$k])) {
-                $request_params['MailBox' . ($k + 1)] = $params['prefix'][$k];
-                $request_params['ForwardTo' . ($k + 1)] = $params['forwardto'][$k];
-            }
-        }
-        $api = new connectresellerRegistrarApi($username, $password, $testmode);
-        $response = $api->request("connectreseller.domains.dns.setEmailForwarding", $request_params);
-        $result = $api->parseResponse($response);
-    }
-    catch (Exception $e) {
-        $values['error'] = "An error occurred: " . $e->getMessage();
-    }
-    return $values;
-}
-
 function connectreseller_GetDNS($params){
     $tld = $params["tld"];
     $sld = $params["sld"];
