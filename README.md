@@ -36,7 +36,9 @@ To configure WHMCS for use with ConnectReseller, perform the following steps:
 
 That’s it. The ConnectReseller plug-in is now ready for use and will function just like any other built-in WHMCS registrar module. You can now make ConnectReseller as the automatic registrar, configure TLDs and services for all your customers. To perform these actions, click on the Setup menu, select Products/Services and click on Domain Pricing in your WHMCS admin panel:
 
-Note: You need to whitelist your WHMCS IP Address into you ConnectReseller panel.
+Note: 
+1. You need to whitelist your WHMCS IP Address into you ConnectReseller panel.
+2. while setting up WHMCS, update the new certificate in the path specified below by refereeing to the command line code. The CA certificate is present in the zip file named as combined.pem, you can open it as a text file. cat /tmp/combined.pem >> /etc/pki/tls/certs/ca-bundle.crt Kindly do the needful with the help of your system administrator and also update the WHMCS to the latest version if it hasn't been done yet.
 
 
 
