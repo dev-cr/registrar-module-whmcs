@@ -29,7 +29,8 @@ To configure WHMCS for use with ConnectReseller, perform the following steps:
 3. Click on Activate next to ConnectReseller in the list:
  ![Activate Plugin](https://global.connectreseller.com//images/activate.jpg "Activate Plugin")
 
-4. Enter your API credentials. Enter the API Key and Brand Id
+4. Enter your API credentials. Enter the API Key and Brand Id 
+(To know your API key and brand ID, Once you have logged in, Go to Profile > Brand URL > API )
 	![Activate Plugin](https://global.connectreseller.com//images/config.png "Configure Plugin")
 5. Click Save Changes.
 
