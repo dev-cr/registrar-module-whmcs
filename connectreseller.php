@@ -10,11 +10,11 @@ function connectreseller_getConfigArray(){
 }
 
 function connectreseller_GetNameservers($params) {
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$tld = $params["tld"];
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $BrandId = $params['BrandId'];
+    $websitename = $sld.'.'.$tld;
+    $tld = $params["tld"];
     $sld = $params["sld"];
     $ApiKey = $params['APIKey'];
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
@@ -31,44 +31,44 @@ function connectreseller_GetNameservers($params) {
         exit;
     }
     curl_close($ch);
-	$res =json_decode($response, true);
+    $res =json_decode($response, true);
     $msgResult = array_key_exists ( "responseMsg" ,$res );
     if($msgResult){
         if($res["responseMsg"]['statusCode']!='200'){
-    		$values["error"] = $res["responseMsg"]['statusCode']." - ".$res["responseMsg"]['message'];
-    	} else {
-    		$values["ns1"] = $res["responseData"]['nameserver1'];
-    		$values["ns2"] =$res["responseData"]['nameserver2'];
-    		$values["ns3"] = $res["responseData"]['nameserver3'];
-    		$values["ns4"] = $res["responseData"]['nameserver4'];
-    		$values["ns5"] = $res["responseData"]['nameserver5'];
-    		$values["ns6"] =$res["responseData"]['nameserver6'];
-    		$values["ns7"] = $res["responseData"]['nameserver7'];
-    		$values["ns8"] = $res["responseData"]['nameserver8'];
-    		$values["ns9"] = $res["responseData"]['nameserver9'];
-    		$values["ns10"] =$res["responseData"]['nameserver10'];
-    		$values["ns11"] = $res["responseData"]['nameserver11'];
-    		$values["ns12"] = $res["responseData"]['nameserver12'];
-    		$values["ns13"] = $res["responseData"]['nameserver13'];
-    	}
+            $values["error"] = $res["responseMsg"]['statusCode']." - ".$res["responseMsg"]['message'];
+        } else {
+            $values["ns1"] = $res["responseData"]['nameserver1'];
+            $values["ns2"] =$res["responseData"]['nameserver2'];
+            $values["ns3"] = $res["responseData"]['nameserver3'];
+            $values["ns4"] = $res["responseData"]['nameserver4'];
+            $values["ns5"] = $res["responseData"]['nameserver5'];
+            $values["ns6"] =$res["responseData"]['nameserver6'];
+            $values["ns7"] = $res["responseData"]['nameserver7'];
+            $values["ns8"] = $res["responseData"]['nameserver8'];
+            $values["ns9"] = $res["responseData"]['nameserver9'];
+            $values["ns10"] =$res["responseData"]['nameserver10'];
+            $values["ns11"] = $res["responseData"]['nameserver11'];
+            $values["ns12"] = $res["responseData"]['nameserver12'];
+            $values["ns13"] = $res["responseData"]['nameserver13'];
+        }
     }else{
         $values["error"] = $res['statusCode']." - ".$res['statusText']." - ".$res['responseText'];
     }
-	return $values;
+    return $values;
 }
 
 function connectreseller_SaveNameservers($params) {
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
-	$BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
+    $BrandId = $params['BrandId'];
+    $websitename = $sld.'.'.$tld;
     $nameserver1 = $params["ns1"];
-	$nameserver2 = $params["ns2"];
+    $nameserver2 = $params["ns2"];
     $nameserver3 = $params["ns3"];
-	$nameserver4 = $params["ns4"];
-	$nameserver5 = $params["ns5"];
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $nameserver4 = $params["ns4"];
+    $nameserver5 = $params["ns5"];
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
     $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
@@ -83,49 +83,49 @@ function connectreseller_SaveNameservers($params) {
         exit;
     }
     curl_close($ch);
-	$res =json_decode($response, true);
-	$DomainNameID = $res["responseData"]['domainNameId'];
-	# Put your code to save the nameservers here
-	if($res["responseData"]['isDomainLocked']!='True'){
-		$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld.'&domainNameId='.$DomainNameID;
-		if($nameserver1 != "") $query .='&nameServer1='.$nameserver1;
-		if($nameserver2 != "") $query .='&nameServer2='.$nameserver2;
-		if($nameserver3 != "") $query .='&nameServer3='.$nameserver3;
-		if($nameserver4 != "") $query .='&nameServer4='.$nameserver4;
-		if($nameserver5 != "") $query .='&nameServer5='.$nameserver5;
- 	  
-    	$updateDomainurl ="https://api.connectreseller.com/ConnectReseller/ESHOP/UpdateNameServer/?".$query;
+    $res =json_decode($response, true);
+    $DomainNameID = $res["responseData"]['domainNameId'];
+    # Put your code to save the nameservers here
+    if($res["responseData"]['isDomainLocked']!='True'){
+        $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld.'&domainNameId='.$DomainNameID;
+        if($nameserver1 != "") $query .='&nameServer1='.$nameserver1;
+        if($nameserver2 != "") $query .='&nameServer2='.$nameserver2;
+        if($nameserver3 != "") $query .='&nameServer3='.$nameserver3;
+        if($nameserver4 != "") $query .='&nameServer4='.$nameserver4;
+        if($nameserver5 != "") $query .='&nameServer5='.$nameserver5;
+      
+        $updateDomainurl ="https://api.connectreseller.com/ConnectReseller/ESHOP/UpdateNameServer/?".$query;
         $updateDomainurl = trim($updateDomainurl);
         $updateDomainurl = str_replace ( ' ', '%20', $updateDomainurl);
-	    $ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $updateDomainurl);
-	    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $updateDomainurl);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-	    $updateResponse = curl_exec($ch);
+        $updateResponse = curl_exec($ch);
 
-	    if($errno = curl_errno($ch)) {
-	        $error_message = curl_strerror($errno);
-	        echo "cURL error ({$errno}):\n {$error_message}";
-	        exit;
-	    }
-	    curl_close($ch);
-		$updateRes =json_decode($updateResponse, true);
-		if($updateRes["responseMsg"]['statusCode']!='200'){	
-			$values["error"] = "Domain Updation Failed(Invalid NameServers)";
-		}
+        if($errno = curl_errno($ch)) {
+            $error_message = curl_strerror($errno);
+            echo "cURL error ({$errno}):\n {$error_message}";
+            exit;
+        }
+        curl_close($ch);
+        $updateRes =json_decode($updateResponse, true);
+        if($updateRes["responseMsg"]['statusCode']!='200'){ 
+            $values["error"] = "Domain Updation Failed(Invalid NameServers)";
+        }
     }else{
-     	$values["error"]="Disable The Status of Lock";
+        $values["error"]="Disable The Status of Lock";
     }
-	return $values;
+    return $values;
 }
 
 function connectreseller_GetRegistrarLock($params) {
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
-	$BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
+    $BrandId = $params['BrandId'];
+    $websitename = $sld.'.'.$tld;
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
 
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
@@ -142,27 +142,27 @@ function connectreseller_GetRegistrarLock($params) {
     }
     curl_close($ch);
     $res =json_decode($response, true);
-	if ($res["responseData"]['isDomainLocked'] == "True" || $res["responseData"]['isDomainLocked'] == "true") {
-		$lockstatus = "locked";
-	} else {
-		$lockstatus = "unlocked";
-	}
-	return $lockstatus;
+    if ($res["responseData"]['isDomainLocked'] == "True" || $res["responseData"]['isDomainLocked'] == "true") {
+        $lockstatus = "locked";
+    } else {
+        $lockstatus = "unlocked";
+    }
+    return $lockstatus;
 }
 
 function connectreseller_SaveRegistrarLock($params) {
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];	
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];    
     $BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	if ($params["lockenabled"] == 'unlocked') {
-		$DomainLockStatus = 'false';
-	} else {
-		$DomainLockStatus = 'true';
-	}
-	// get the domainnameid from url	
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $websitename = $sld.'.'.$tld;
+    if ($params["lockenabled"] == 'unlocked') {
+        $DomainLockStatus = 'false';
+    } else {
+        $DomainLockStatus = 'true';
+    }
+    // get the domainnameid from url    
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
@@ -181,7 +181,7 @@ function connectreseller_SaveRegistrarLock($params) {
     $domainNameId = $res["responseData"]['domainNameId'];
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld.'&domainNameId='.$domainNameId.'&isDomainLocked='.$DomainLockStatus;
     $manageUrl = trim("https://api.connectreseller.com/ConnectReseller/ESHOP/ManageDomainLock/?".$query);
-	$ch = curl_init();
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $manageUrl);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
@@ -193,10 +193,10 @@ function connectreseller_SaveRegistrarLock($params) {
     }
     curl_close($ch);
     $manageRes =json_decode($manageResponse, true);
-	if($manageRes["responseMsg"]['statusCode']!='200'){
+    if($manageRes["responseMsg"]['statusCode']!='200'){
         $values["error"] = $manageRes["responseMsg"]['statusCode']." - ".$manageRes["responseMsg"]['message'];
     }
-	return $values;
+    return $values;
 }
 function connectreseller_GetDNS($params){
     $tld = $params["tld"];
@@ -204,7 +204,6 @@ function connectreseller_GetDNS($params){
     $ApiKey = $params['APIKey'];   
     $BrandId = $params['BrandId'];
     $websitename = $sld.'.'.$tld;
-    # Put your code to get the lock status here
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
 
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
@@ -247,7 +246,6 @@ function connectreseller_GetDNS($params){
             $host = $viewDnsRes['responseData'];
             foreach ($host as $v) {
                 if(($v['recordType'] != 'SRV') && ($v['recordType'] != 'SOA')  && ($v['recordType'] != 'NS')){
-                    
                     $values[] = array(
                         'hostname' => $v['recordName'],
                         'type'     => $v['recordType'],
@@ -313,8 +311,8 @@ function connectreseller_GetDNS($params){
     return $values;
 }
 function connectreseller_SaveDNS($params){
-
-    $sld = $params['sld'];   
+    $sld = $params['sld'];  
+    $tld =  $params['tld']; 
     $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
     $websitename = $sld.'.'.$tld;
@@ -336,7 +334,6 @@ function connectreseller_SaveDNS($params){
     }
     curl_close($ch);
     $res =json_decode($response, true);
-
     $domianId = $res["responseData"]['domainNameId'];
     $websiteId = $res["responseData"]['websiteId'];
     $DomainNameID =9463;
@@ -358,27 +355,26 @@ function connectreseller_SaveDNS($params){
         }
         curl_close($ch);
         $viewDnsRes =json_decode($viewDnsResponse, true);
+
         if($viewDnsRes["responseMsg"]['statusCode']!='200'){
             $values["error"] = $viewDnsRes["responseMsg"]['statusCode']." - ".$viewDnsRes["responseMsg"]['message'];
          }else{
             $host = $viewDnsRes['responseData'];
             foreach ($params['dnsrecords'] as $k => $v) {
-                if (!empty($v['hostname']) && !empty($v['type']) && !empty($v['address'])) {
-                    
+                if (!empty($v['hostname']) && !empty($v['type']) && !empty($v['address'])) {                    
                     if($v['recid'] !="" && $v['recid'] !=null){
                         $key = array_search($v['recid'], array_column($host, 'dnszoneRecordID'));
                         if($key != -1){
                             $checkHost = $host[$key];
                             if(($v['hostname'] !=$checkHost['recordName'] ) || ($v['type'] !=$checkHost['recordType']) || ($v['address'] !=$checkHost['recordContent']) || 
-                                (($v['priority'] !=$checkHost['recordPriority']) && $v['type'] )){
+                                (($v['priority'] !=$checkHost['recordPriority']) && $v['type'] =="MX" )){
                                 $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid'].'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address']; 
                                 $modifyDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyDNSRecord/?".$query;
-                                $addClienturl = trim($addClienturl);
-                                $addClienturl = str_replace ( ' ', '%20', $addClienturl);
+                                $modifyDnsUrl = trim($modifyDnsUrl);
+                                $modifyDnsUrl = str_replace ( ' ', '%20', $modifyDnsUrl);
                                 $ch = curl_init();
                                 curl_setopt($ch, CURLOPT_URL, $modifyDnsUrl);
                                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                                 $viewDnsResponse = curl_exec($ch);
                                 if($errno = curl_errno($ch)) {
                                     $error_message = curl_strerror($errno);
@@ -390,13 +386,15 @@ function connectreseller_SaveDNS($params){
                                 if($modifyDnsRes["responseMsg"]['statusCode']!='200'){
                                     $values["error"] = $modifyDnsRes["responseMsg"]['statusCode']." - ".$modifyDnsRes["responseMsg"]['message'];
                                 }else{
+                                    $values["error"] ="Record Updated Successfully";
                                 }
                             }
                         }      
                     }else{
-                        $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address']; 
+                        $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
                         $addDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/AddDNSRecord/?".$query;
                         $addDnsUrl = trim($addDnsUrl);
+
                         $addDnsUrl = str_replace ( ' ', '%20', $addDnsUrl);
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $addDnsUrl);
@@ -413,18 +411,17 @@ function connectreseller_SaveDNS($params){
                         if($addDnsRes["responseMsg"]['statusCode']!='200'){
                             $values["error"] = $addDnsRes["responseMsg"]['statusCode']." - ".$addDnsRes["responseMsg"]['message'];
                         }else{
+                            $values["error"] = " Record Added Successfully";
                         }
                     }
                 }
             }
         }
     }
-    
-    
     return $values;
 }
 function connectreseller_RegisterDomain($params){
-	$tld = $params["tld"];
+    $tld = $params["tld"];
     $sld = $params["sld"];
     $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
@@ -453,7 +450,7 @@ function connectreseller_RegisterDomain($params){
     }
  
     curl_close($ch);
-	$res =json_decode($response, true);
+    $res =json_decode($response, true);
 
     $msgResult = array_key_exists ( "responseMsg" ,$res );
     if($msgResult){
@@ -604,25 +601,25 @@ function connectreseller_RegisterDomain($params){
     }else{
         $values["error"] = $res['statusCode']." - Domain Registration Failure - ".$res['responseText'];
     }
- 	return $values;
+    return $values;
 }
 function connectreseller_TransferDomain($params){
 
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];	
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];    
     $BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$regperiod = $params["regperiod"];
-	$nameserver1 = $params["ns1"];
-	$nameserver2 = $params["ns2"];
-	$nameserver3 = $params["ns3"];
-	$nameserver4 = $params["ns4"];
+    $websitename = $sld.'.'.$tld;
+    $regperiod = $params["regperiod"];
+    $nameserver1 = $params["ns1"];
+    $nameserver2 = $params["ns2"];
+    $nameserver3 = $params["ns3"];
+    $nameserver4 = $params["ns4"];
     $IsWhoisProtectionFalse ="false";
     $IsWhoisProtection = $params["idprotection"]==1?true:$IsWhoisProtectionFalse;
-	$RegistrantEmailAddress = $params["email"];
-	$authCode = $params["eppcode"];
-	$query = 'APIKey='.$ApiKey.'&UserName='.$RegistrantEmailAddress;
+    $RegistrantEmailAddress = $params["email"];
+    $authCode = $params["eppcode"];
+    $query = 'APIKey='.$ApiKey.'&UserName='.$RegistrantEmailAddress;
     $viewClienturl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewClient/?".$query;
     $viewClienturl = trim($viewClienturl);
     $viewClienturl = str_replace ( ' ', '%20', $viewClienturl);
@@ -644,8 +641,8 @@ function connectreseller_TransferDomain($params){
     $msgResult = array_key_exists ( "responseMsg" ,$res );
     if($msgResult){
         if($res["responseMsg"]['statusCode']!='200'){
-    		
-    		$UserName = $params["email"];
+            
+            $UserName = $params["email"];
             $str ="cr123456";
             $Password =str_shuffle($str);
             $companyname = $params["companyname"];
@@ -742,10 +739,10 @@ function connectreseller_TransferDomain($params){
                     $values['error'] = "An error occurred: " . $e->getMessage();
                 }
             }
-    	} else {
+        } else {
             $UserName = $res['responseData']['userName'];
             $CustomerID = $res['responseData']['clientId'];
-    		try{  
+            try{  
                 $dataArr =array(
                     'Id' => intval($CustomerID),
                     'OrderType' => 4,
@@ -781,11 +778,11 @@ function connectreseller_TransferDomain($params){
                         $values["result"] = "success";
                     }    
                 }
-    		}
-    		catch (Exception $e) {
-    			$values['error'] = "An error occurred: " . $e->getMessage();
-    		}
-    	}
+            }
+            catch (Exception $e) {
+                $values['error'] = "An error occurred: " . $e->getMessage();
+            }
+        }
     }else{
         $values["error"] = $res['statusCode']." - Domain Transfer Failure - ".$res['responseText'];
     }
@@ -794,11 +791,11 @@ function connectreseller_TransferDomain($params){
 function connectreseller_RenewDomain($params){
 
     $tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$regperiod =$params['regperiod'];
+    $websitename = $sld.'.'.$tld;
+    $regperiod =$params['regperiod'];
     $IsWhoisProtectionFalse ="false";
     $IsWhoisProtection = $params["idprotection"]==1?true:$IsWhoisProtectionFalse;
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
@@ -821,14 +818,14 @@ function connectreseller_RenewDomain($params){
     if($msgResult){
 
         if($res["responseMsg"]['statusCode']!='200'){
-    		$values["error"] = $res["responseMsg"]['message'];	
-    	}else{ 
+            $values["error"] = $res["responseMsg"]['message'];  
+        }else{ 
             $CustomerId = $res["responseData"]['customerId'];
             $query = 'APIKey='.$ApiKey.'&Websitename='.$sld.'.'.$tld.'&OrderType=2&Duration='.$regperiod.'&Id='.$CustomerId.'&IsWhoisProtection='.$IsWhoisProtection;
             $renewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/RenewalOrder/?".$query;
             $renewDomainurl = trim($renewDomainurl);
             $renewDomainurl = str_replace ( ' ', '%20', $renewDomainurl);
-          	$ch = curl_init();
+            $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $renewDomainurl);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
@@ -841,28 +838,28 @@ function connectreseller_RenewDomain($params){
             curl_close($ch);
             $res1 =json_decode($response1, true);
             if($res1["responseMsg"]['statusCode']!='200'){
-    			$values["error"] = $res1["responseMsg"]['statusCode']." - ".$res1["responseMsg"]['message'];
-    		}else{
+                $values["error"] = $res1["responseMsg"]['statusCode']." - ".$res1["responseMsg"]['message'];
+            }else{
                 if($res1["responseData"]['statusCode']!=1000){
                     $values["error"] = $res1["responseData"]['statusCode']." - ".$res1["responseData"]['message'];
                 }else{
                     $values["result"] = "success";
                 }
             }
-    	}
-	}else{
+        }
+    }else{
         $values["error"] = $res['statusCode']." - Domain Renewal Failure - ".$res['responseText'];
     }
     return $values;
 }
 function connectreseller_GetContactDetails($params){
 
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-    $ApiKey = $params['APIKey'];	
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];    
     $BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$regperiod =$params['regperiod'];
+    $websitename = $sld.'.'.$tld;
+    $regperiod =$params['regperiod'];
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
@@ -878,13 +875,13 @@ function connectreseller_GetContactDetails($params){
         exit;
     }
     curl_close($ch);
-	$res =json_decode($response, true);
+    $res =json_decode($response, true);
 
-	$RegistrantContactId = $res["responseData"]['registrantContactId'];
-	$GetContactDetails = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$RegistrantContactId;
+    $RegistrantContactId = $res["responseData"]['registrantContactId'];
+    $GetContactDetails = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$RegistrantContactId;
     $GetContactDetails = trim($GetContactDetails);
     $GetContactDetails = str_replace ( ' ', '%20', $GetContactDetails);
-	$ch = curl_init();
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $GetContactDetails);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
@@ -895,32 +892,32 @@ function connectreseller_GetContactDetails($params){
         exit;
     }
     curl_close($ch);
-	$contactDetailsRes = json_decode($contactDetailsResponse, true);
-	$result = array();
-	$result['name'] = $contactDetailsRes["responseData"]['name'];
-	$result['Company'] = $contactDetailsRes["responseData"]['companyName'];
-	$result['Address1'] = $contactDetailsRes["responseData"]['address1'];
-	$result['Address2'] = $contactDetailsRes["responseData"]['address2'];;
-	$result['Address3'] = $contactDetailsRes["responseData"]['address3'];
-	$result['City'] = $contactDetailsRes["responseData"]['city'];
-	$result['State'] = "Maharashtra";
-	$result['Country'] = "India";
-	$result['Zip'] = $contactDetailsRes["responseData"]['postalCode'];
-	$result['PhoneNo_CountryCode'] = $contactDetailsRes["responseData"]['phoneCode'];
-	$result['PhoneNo'] = $contactDetailsRes["responseData"]['phoneNo'];
-	$result['PhoneNo'] = substr($result['PhoneNo'], 0, 10);
-	$result['emailaddr'] = $contactDetailsRes["responseData"]['emailAddress'];
-	$values['Registrant'] = array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
+    $contactDetailsRes = json_decode($contactDetailsResponse, true);
+    $result = array();
+    $result['name'] = $contactDetailsRes["responseData"]['name'];
+    $result['Company'] = $contactDetailsRes["responseData"]['companyName'];
+    $result['Address1'] = $contactDetailsRes["responseData"]['address1'];
+    $result['Address2'] = $contactDetailsRes["responseData"]['address2'];;
+    $result['Address3'] = $contactDetailsRes["responseData"]['address3'];
+    $result['City'] = $contactDetailsRes["responseData"]['city'];
+    $result['State'] = "Maharashtra";
+    $result['Country'] = "India";
+    $result['Zip'] = $contactDetailsRes["responseData"]['postalCode'];
+    $result['PhoneNo_CountryCode'] = $contactDetailsRes["responseData"]['phoneCode'];
+    $result['PhoneNo'] = $contactDetailsRes["responseData"]['phoneNo'];
+    $result['PhoneNo'] = substr($result['PhoneNo'], 0, 10);
+    $result['emailaddr'] = $contactDetailsRes["responseData"]['emailAddress'];
+    $values['Registrant'] = array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
     
-	return $values;
+    return $values;
 }
 function connectreseller_SaveContactDetails($params){
-	$tld = $params["tld"];
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
-	$websitename = $sld.'.'.$tld;
-	$regperiod = $params['regperiod'];
+    $websitename = $sld.'.'.$tld;
+    $regperiod = $params['regperiod'];
     $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
@@ -935,56 +932,56 @@ function connectreseller_SaveContactDetails($params){
         exit;
     }
     curl_close($ch);
-	$res =json_decode($response, true);
+    $res =json_decode($response, true);
     $msgResult = array_key_exists ( "responseMsg" ,$res );
     if($msgResult){
-    	$RegistrantContactId = $res["responseData"]['registrantContactId'];
-    	$query = 'APIKey='.$ApiKey;
+        $RegistrantContactId = $res["responseData"]['registrantContactId'];
+        $query = 'APIKey='.$ApiKey;
         $query .= '&Id='.$res["responseData"]['customerId'];
-    	$query .='&EmailAddress='.$params['contactdetails']['Registrant']['Email'];
-    	$query .='&Name='.$params['contactdetails']['Registrant']['Full Name'];
-    	$query .='&Address1='.$params['contactdetails']['Registrant']['Address 1'];
+        $query .='&EmailAddress='.$params['contactdetails']['Registrant']['Email'];
+        $query .='&Name='.$params['contactdetails']['Registrant']['Full Name'];
+        $query .='&Address1='.$params['contactdetails']['Registrant']['Address 1'];
         $query .='&Address2='.$params['contactdetails']['Registrant']['Address 2'];
         $query .='&Address3='.$params['contactdetails']['Registrant']['Address 3'];
-    	$query .='&City='.$params['contactdetails']['Registrant']['City'];
-    	$query .='&StateName='.$params['contactdetails']['Registrant']['State'];
-    	$query .='&CountryName='.$params['contactdetails']['Registrant']['Country'];
-    	$query .='&PhoneNo_cc=91';
-    	$query .='&PhoneNo='.$params['contactdetails']['Registrant']['Phone Number'];
-    	$query .='&Zip='.$params['contactdetails']['Registrant']['Postcode'];
-    	$query .='&CompanyName='.$params['contactdetails']['Registrant']['Company Name'];
+        $query .='&City='.$params['contactdetails']['Registrant']['City'];
+        $query .='&StateName='.$params['contactdetails']['Registrant']['State'];
+        $query .='&CountryName='.$params['contactdetails']['Registrant']['Country'];
+        $query .='&PhoneNo_cc=91';
+        $query .='&PhoneNo='.$params['contactdetails']['Registrant']['Phone Number'];
+        $query .='&Zip='.$params['contactdetails']['Registrant']['Postcode'];
+        $query .='&CompanyName='.$params['contactdetails']['Registrant']['Company Name'];
         $query .='&domainId='.$res["responseData"]['domainNameId'];
-    	
-      	$SaveContactDetails ="https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyRegistrantContact_whmcs?".$query;
-      	
+        
+        $SaveContactDetails ="https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyRegistrantContact_whmcs?".$query;
+        
         $SaveContactDetails = trim($SaveContactDetails);
         $SaveContactDetails = str_replace ( ' ', '%20', $SaveContactDetails);
-    	$ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $SaveContactDetails);
-	    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $SaveContactDetails);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-	    $updateResponse = curl_exec($ch);
-	    if($errno = curl_errno($ch)) {
-	        $error_message = curl_strerror($errno);
-	        echo "cURL error ({$errno}):\n {$error_message}";
-	        exit;
-	    }
-	    curl_close($ch);
-		$updateRes =json_decode($updateResponse, true);
+        $updateResponse = curl_exec($ch);
+        if($errno = curl_errno($ch)) {
+            $error_message = curl_strerror($errno);
+            echo "cURL error ({$errno}):\n {$error_message}";
+            exit;
+        }
+        curl_close($ch);
+        $updateRes =json_decode($updateResponse, true);
        
-		if($updateRes["responseMsg"]['statusCode']!='200'){		
-			$values["error"] = $updateRes["responseMsg"]['message'];
-		}
+        if($updateRes["responseMsg"]['statusCode']!='200'){     
+            $values["error"] = $updateRes["responseMsg"]['message'];
+        }
     }else{
         if($updateRes["responseMsg"]['statusCode']!='200'){     
             $values["error"] = $updateRes["responseMsg"]['message'];
         }
     }
-	return $values;
+    return $values;
 }
 function connectreseller_GetEPPCode($params) {
-	
-	$tld = $params["tld"];
+    
+    $tld = $params["tld"];
     $sld = $params["sld"];
     $ApiKey = $params['APIKey'];
     $websitename = $sld.'.'.$tld;
@@ -1004,27 +1001,27 @@ function connectreseller_GetEPPCode($params) {
         exit;
     }
     curl_close($ch);
-	$res =json_decode($response, true);
+    $res =json_decode($response, true);
     if($res["responseMsg"]['statusCode']!='200'){
-		$values["error"] = $res["responseMsg"]['statusCode'].$res["responseMsg"]['message'];
-	} else {
-		$eppcode = $res["responseData"]["authCode"];
-		$values["eppcode"] = $eppcode;
-		
-	}
-	return $values;
+        $values["error"] = $res["responseMsg"]['statusCode'].$res["responseMsg"]['message'];
+    } else {
+        $eppcode = $res["responseData"]["authCode"];
+        $values["eppcode"] = $eppcode;
+        
+    }
+    return $values;
 }
 function connectreseller_RegisterNameserver($params){
 
     $tld = $params["tld"]; 
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
-	$websitename =$params['domainname'];
+    $websitename =$params['domainname'];
     $ipaddress = $params["ipaddress"];
     $Server = $params["nameserver"];
 
-  	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
     $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
@@ -1043,9 +1040,9 @@ function connectreseller_RegisterNameserver($params){
     $domainNameId = $res["responseData"]['domainNameId'];
     $query = 'APIKey='.$ApiKey.'&websiteName='.$websitename.'&domainNameId='.$domainNameId.'&hostName='.$Server.'&ipAddress='.$ipaddress;
     $addChildUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/AddChildNameServer/?".$query;
-	$addChildUrl = trim($addChildUrl);
+    $addChildUrl = trim($addChildUrl);
     $addChildUrl = str_replace ( ' ', '%20', $addChildUrl);
-	$ch = curl_init();
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $addChildUrl);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
     $addChildResponse = curl_exec($ch);
@@ -1066,19 +1063,19 @@ function connectreseller_RegisterNameserver($params){
     }else{
         $values["error"]='Created Successfully '.$Server;
     }
-  	return $values;
+    return $values;
 }
 function connectreseller_ModifyNameserver($params){
     $tld = $params["tld"]; 
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];
     $BrandId = $params['BrandId'];
-	$websitename =$params['domainname'];
+    $websitename =$params['domainname'];
     $ipaddress = $params["ipaddress"];
     $Server = $params["nameserver"];  
     $currentipaddress = $params["currentipaddress"];
     $newipaddress = $params["newipaddress"]; 
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
     $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
@@ -1098,7 +1095,7 @@ function connectreseller_ModifyNameserver($params){
     $modifyChildUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyChildNameServerIP/?".$query;
     $modifyChildUrl = trim($modifyChildUrl);
     $modifyChildUrl = str_replace ( ' ', '%20', $modifyChildUrl);
-	$ch = curl_init();
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $modifyChildUrl);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
@@ -1121,19 +1118,19 @@ function connectreseller_ModifyNameserver($params){
         }
         
     }else{
-		$values["error"]='Updated Successfully '.$Server;
-	}
+        $values["error"]='Updated Successfully '.$Server;
+    }
     return $values;
 }
 function connectreseller_DeleteNameserver($params){
 
-  	$tld = $params["tld"]; 
-	$sld = $params["sld"];
-	$ApiKey = $params['APIKey'];	
+    $tld = $params["tld"]; 
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey'];    
     $BrandId = $params['BrandId'];
-	$websitename =$params['domainname'];
-	$Server = $params["nameserver"];  
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
+    $websitename =$params['domainname'];
+    $Server = $params["nameserver"];  
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
     $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
     $viewDomainurl = trim($viewDomainurl);
     $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
@@ -1151,7 +1148,7 @@ function connectreseller_DeleteNameserver($params){
     $res =json_decode($response, true);
     $domainNameId = $res["responseData"]['domainNameId'];
  
-	$query = 'APIKey='.$ApiKey.'&websiteName='.$websitename.'&domainNameId='.$domainNameId.'&hostName='.$Server;
+    $query = 'APIKey='.$ApiKey.'&websiteName='.$websitename.'&domainNameId='.$domainNameId.'&hostName='.$Server;
     $deleteChildUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/DeleteChildNameServer/?".$query;
     $deleteChildUrl = trim($deleteChildUrl);
     $deleteChildUrl = str_replace ( ' ', '%20', $deleteChildUrl);
@@ -1177,10 +1174,10 @@ function connectreseller_DeleteNameserver($params){
         }
         
     }else{
-     	$values["error"]='Deleted Successfully '.$Server;
+        $values["error"]='Deleted Successfully '.$Server;
     }  
-	
-	return $values;
+    
+    return $values;
 }
 function connectreseller_IDProtectToggle($params){
     $tld = $params["tld"];
