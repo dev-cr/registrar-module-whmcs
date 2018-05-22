@@ -368,7 +368,7 @@ function connectreseller_SaveDNS($params){
                             $checkHost = $host[$key];
                             if(($v['hostname'] !=$checkHost['recordName'] ) || ($v['type'] !=$checkHost['recordType']) || ($v['address'] !=$checkHost['recordContent']) || 
                                 (($v['priority'] !=$checkHost['recordPriority']) && $v['type'] =="MX" )){
-                                $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid'].'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address']; 
+                                $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid'].'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
                                 $modifyDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyDNSRecord/?".$query;
                                 $modifyDnsUrl = trim($modifyDnsUrl);
                                 $modifyDnsUrl = str_replace ( ' ', '%20', $modifyDnsUrl);
