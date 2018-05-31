@@ -39,9 +39,7 @@ That’s it. The ConnectReseller plug-in is now ready for use and will function 
 
 Note: 
 1. You need to whitelist your WHMCS IP Address into you ConnectReseller panel.
-2. This step is for your server, if it does not have a latest version of CA certificate of COMODO installed. If you were unable to Register the domain and encounter with the error "cURL error (60): Peer certificate cannot be authenticated with given CA certificates", then you have to proceed with this last step.
-3. You first have to copy the file "combined.pem" (this file includes latest Comodo CA certificate, you can open it as txt file to see) in the /tmp folder under your server directory. Once you have copied the file, then you must run the command: cat /tmp/combined.pem >> /etc/pki/tls/certs/ca-bundle.crt as this will update the latest CA certificate in your server. -The CA certificate is present in the zip file named as combined.pem, you can open it as a text file. cat /tmp/combined.pem >> /etc/pki/tls/certs/ca-bundle.crt 
-4. Kindly do the needful with the help of your system administrator and also update the WHMCS to the latest version if it hasn't been updated yet.
+
 
 
 
