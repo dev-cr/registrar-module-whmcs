@@ -1271,3 +1271,51 @@ function connectreseller_TransferSync($params){
     curl_close($ch);
     return $result;
 }
+
+function connectreseller_Sync($params){
+    $tld = $params["tld"];
+    $sld = $params["sld"];
+    $ApiKey = $params['APIKey']; 
+    $BrandId = $params['BrandId'];
+    $websitename = $params['domain'];   
+    $query = 'APIKey='.$ApiKey.'&domainName='.$websitename;
+    $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
+    $viewDomainurl = trim($viewDomainurl);
+    $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($ch);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+    $response = curl_exec($ch);
+    if($errno = curl_errno($ch)) {
+        $error_message = curl_strerror($errno);
+        echo "cURL error ({$errno}):\n {$error_message}";
+        exit;
+    }
+    curl_close($ch);
+    $result = array();
+    $res =json_decode($response, true);
+    if($res["responseMsg"]['statusCode']!='200'){
+            $values["error"] = $res["responseMsg"]['statusCode']." - ".$res["responseMsg"]['message'];
+        } else {
+            if($res["responseData"]["status"] == "Renewal Hold" || $res["responseData"]["status"] == "Pending Delete Restorable"  || $res["responseData"]["status"] == "Deleted" ){
+                $result['active'] =false;
+                $result['expired']=true;
+                $result['expirydate'] =$date= date('Y-m-d', intval($res["responseData"]['expirationDate']/1000));
+            }else{
+                $result['active'] =true;
+                $result['expired']=false;
+                $result['expirydate'] =$date= date('Y-m-d', intval($res["responseData"]['expirationDate']/1000));
+            }
+            return $result;   
+        }
+    }else{
+        $values["error"] = $res['statusCode']." - ".$res['statusText']." - ".$res['responseText'];
+    }
+    
+    
+}
