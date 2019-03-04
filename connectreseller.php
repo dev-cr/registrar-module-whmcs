@@ -604,7 +604,7 @@
         return $values;
     }
     function connectreseller_TransferDomain($params){
-
+      
         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey'];    
@@ -693,12 +693,11 @@
                     $error_message = curl_strerror($errno);
                     echo "cURL error ({$errno}):\n {$error_message}";
                 }
-                $addClientRes=json_decode($addClientResponse);
+                $addClientRes=json_decode($addClientResponse,true);
                 if($addClientRes['responseMsg']['statusCode']!=200){
                     $values["error"] ="Domain Transfer Failure: Unable to add client.";
                 } else {
-                    curl_close($ch);
-                    
+                    curl_close($ch);   
                     $UserName = $addClientRes['responseData']['userName'];
                     $CustomerID = $addClientRes['responseData']['clientId'];
                     try{
@@ -710,7 +709,6 @@
                             'AuthCode' => $authCode
                         );
                         $query =http_build_query($dataArr);
-                        $query = URIComponentEncode($query);
                         $query = $query.'&IsWhoisProtection='.$IsWhoisProtection;
                         $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
                         $orderUrl = trim($orderUrl);
