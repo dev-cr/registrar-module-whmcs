@@ -4,7 +4,8 @@
     function connectreseller_getConfigArray(){
         $configarray = array(
             'APIKey' => array('Type' => "text", 'Size' => "20", 'Description' => "Enter your API key"),
-            'BrandId' => array('Type' => "text", 'Size' => "20", 'Description' => " Enter your BrandId  "),       
+            'BrandId' => array('Type' => "text", 'Size' => "20", 'Description' => " Enter your BrandId  "), 
+            'CouponCode' => array('Type' => "text", 'Size' => "20", 'Description' => " Enter your Coupon code  "),      
         );
         return $configarray;
     }
@@ -543,6 +544,9 @@
                     if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                     if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                     if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                    if (!(!isset($CouponCode) || trim($CouponCode) === '')){
+                       $query .= '&couponCode='.$CouponCode;
+                    }
 
                     $orderUrl =trim("https://api.connectreseller.com/ConnectReseller/ESHOP/Order/?".$query);
                     $orderUrl = trim($orderUrl);
@@ -576,6 +580,9 @@
                 if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                 if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                 if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                if (!(!isset($CouponCode) || trim($CouponCode) === '')){
+                   $query .= '&couponCode='.$CouponCode;
+                }
 
                 $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/Order/?".$query;
                 $orderUrl = trim($orderUrl);
@@ -710,6 +717,10 @@
                         );
                         $query =http_build_query($dataArr);
                         $query = $query.'&IsWhoisProtection='.$IsWhoisProtection;
+                        if (!(!isset($CouponCode) || trim($CouponCode) === '')){
+                           $query .= '&couponCode='.$CouponCode;
+                        }
+
                         $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
                         $orderUrl = trim($orderUrl);
                         $orderUrl = str_replace ( ' ', '%20', $orderUrl);                   
@@ -749,6 +760,10 @@
                         'AuthCode' => $authCode
                     );
                     $query =http_build_query($dataArr);
+                    if (!(!isset($CouponCode) || trim($CouponCode) === '')){
+                       $query .= '&couponCode='.$CouponCode;
+                    }
+
                     $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
                    
                     $orderUrl = trim($orderUrl);
@@ -820,6 +835,10 @@
             }else{ 
                 $CustomerId = $res["responseData"]['customerId'];
                 $query = 'APIKey='.$ApiKey.'&Websitename='.$sld.'.'.$tld.'&OrderType=2&Duration='.$regperiod.'&Id='.$CustomerId.'&IsWhoisProtection='.$IsWhoisProtection;
+                if (!(!isset($CouponCode) || trim($CouponCode) === '')){
+                   $query .= '&couponCode='.$CouponCode;
+                }
+
                 $renewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/RenewalOrder/?".$query;
                 $renewDomainurl = trim($renewDomainurl);
                 $renewDomainurl = str_replace ( ' ', '%20', $renewDomainurl);
