@@ -433,6 +433,7 @@
         $nameserver3 = $params["ns3"];
         $nameserver4 = $params["ns4"];
         $IsWhoisProtectionFalse ="false";
+        $CouponCode =$params["CouponCode"];
         $IsWhoisProtection = $params["idprotection"]==1?true:$IsWhoisProtectionFalse;
         $RegistrantEmailAddress = $params["email"];
         $query = 'APIKey='.$ApiKey.'&UserName='.$RegistrantEmailAddress;
@@ -618,6 +619,7 @@
         $BrandId = $params['BrandId'];
         $websitename = $sld.'.'.$tld;
         $regperiod = $params["regperiod"];
+        $CouponCode =$params["CouponCode"];
         $nameserver1 = $params["ns1"];
         $nameserver2 = $params["ns2"];
         $nameserver3 = $params["ns3"];
@@ -809,6 +811,7 @@
         $BrandId = $params['BrandId'];
         $websitename = $sld.'.'.$tld;
         $regperiod =$params['regperiod'];
+        $CouponCode =$params["CouponCode"];
         $IsWhoisProtectionFalse ="false";
         $IsWhoisProtection = $params["idprotection"]==1?true:$IsWhoisProtectionFalse;
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
