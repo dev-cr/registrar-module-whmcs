@@ -1,4 +1,10 @@
 <?php
+
+
+use WHMCS\Domains\DomainLookup\ResultsList;
+use WHMCS\Domains\DomainLookup\SearchResult;
+
+
     ini_set("display_errors","1");
     $apiUrl ="https://api.connectreseller.com/ConnectReseller/";
     function connectreseller_getConfigArray(){
@@ -545,11 +551,12 @@
                     if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                     if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                     if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                    $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+                    $query .='&isEnablePremium='.$premiumEnabled;
                     if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                        $query .= '&couponCode='.$CouponCode;
                     }
-
-                    $orderUrl =trim("https://api.connectreseller.com/ConnectReseller/ESHOP/Order/?".$query);
+                    $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/domainorder/?".$query;
                     $orderUrl = trim($orderUrl);
                     $orderUrl = str_replace ( ' ', '%20', $orderUrl);
                     $ch = curl_init();
@@ -581,13 +588,16 @@
                 if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                 if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                 if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+                $query .='&isEnablePremium='.$premiumEnabled;
                 if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                    $query .= '&couponCode='.$CouponCode;
                 }
-
-                $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/Order/?".$query;
+                   
+                $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/domainorder/?".$query;
                 $orderUrl = trim($orderUrl);
                 $orderUrl = str_replace ( ' ', '%20', $orderUrl);
+
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $orderUrl);
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -719,9 +729,12 @@
                         );
                         $query =http_build_query($dataArr);
                         $query = $query.'&IsWhoisProtection='.$IsWhoisProtection;
+                        // $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+                        // $query .='&isEnablePremium='.$premiumEnabled;
                         if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                            $query .= '&couponCode='.$CouponCode;
                         }
+
 
                         $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
                         $orderUrl = trim($orderUrl);
@@ -762,6 +775,8 @@
                         'AuthCode' => $authCode
                     );
                     $query =http_build_query($dataArr);
+                    // $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+                    // $query .='&isEnablePremium='.$premiumEnabled;
                     if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                        $query .= '&couponCode='.$CouponCode;
                     }
@@ -838,11 +853,13 @@
             }else{ 
                 $CustomerId = $res["responseData"]['customerId'];
                 $query = 'APIKey='.$ApiKey.'&Websitename='.$sld.'.'.$tld.'&OrderType=2&Duration='.$regperiod.'&Id='.$CustomerId.'&IsWhoisProtection='.$IsWhoisProtection;
+                $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+                $query .='&isEnablePremium='.$premiumEnabled;
                 if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                    $query .= '&couponCode='.$CouponCode;
                 }
 
-                $renewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/RenewalOrder/?".$query;
+                $renewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/renewalorder/?".$query;
                 $renewDomainurl = trim($renewDomainurl);
                 $renewDomainurl = str_replace ( ' ', '%20', $renewDomainurl);
                 $ch = curl_init();
@@ -1292,6 +1309,9 @@
     }
 
     function connectreseller_Sync($params){
+
+        print_r($params);
+        exit;
         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey']; 
@@ -1331,5 +1351,77 @@
         }else{
             $values["error"] = $res['statusCode']." - ".$res['statusText']." - ".$res['responseText'];
         }  
+    }
+
+    function connectreseller_CheckAvailability($params){
+
+        
+        $userIdentifier = $params['API Username'];
+        $apiKey = $params['API Key'];
+        $testMode = $params['Test Mode'];
+        $accountMode = $params['Account Mode'];
+        $emailPreference = $params['Email Preference'];
+        $additionalInfo = $params['Additional Information'];
+        $searchTerm = $params['searchTerm'];
+        $tldsToInclude = $params['tldsToInclude'];
+        $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+        $tld = $params["tld"];
+        $sld = $params["sld"];
+        $ApiKey = $params['APIKey'];   
+        $BrandId = $params['BrandId'];
+        $websitename = $sld.'.'.$tld;
+        $tldsToInclude =implode(",",$params['tldsToInclude']);
+        $query = 'APIKey='.$ApiKey.'&searchString='.$sld.'&tldsInclude='.$tldsToInclude.'&premiumEnable='.$premiumEnabled;
+        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/whmcscheckdomain/?".$query;
+        $viewDomainurl = trim($viewDomainurl);
+        $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $response = curl_exec($ch);
+        if($errno = curl_errno($ch)) {
+            $error_message = curl_strerror($errno);
+            echo "cURL error ({$errno}):\n {$error_message}";
+            exit;
+        }
+        curl_close($ch);
+         $results = new ResultsList();
+        $res =json_decode($response, true);
+        try {
+            foreach ($res["responseData"] as $domain) {
+                $arr =explode(".",$domain['domain'],2);
+               
+                $searchResult = new SearchResult($arr[0], ".".$arr[1]);
+                if ($domain['status'] == 'available') {
+                    $status = SearchResult::STATUS_NOT_REGISTERED;
+                } elseif ($domain['status'] == 'registered') {
+                    $status = SearchResult::STATUS_REGISTERED;
+                } elseif ($domain['status'] == 'reserved') {
+                    $status = SearchResult::STATUS_RESERVED;
+                } else {
+                    $status = SearchResult::STATUS_TLD_NOT_SUPPORTED;
+                }
+                $searchResult->setStatus($status);
+                if($params['premiumEnabled']){
+                    if ($domain['premium']) {
+                        $searchResult->setPremiumDomain(true);
+                        $searchResult->setPremiumCostPricing(
+                            array(
+                                'register' => $domain['price'],
+                                'renew' => $domain['renewalPrice'],
+                                'CurrencyCode' => $domain['currencyCode'],
+                            )
+                        );
+                    }
+                }
+                
+                $results->append($searchResult);
+            }
+            return $results;
+        } catch (\Exception $e) {
+            return array(
+                'error' => $e->getMessage(),
+            );
+        }
     }
 ?>
