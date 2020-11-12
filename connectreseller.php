@@ -1310,8 +1310,7 @@ use WHMCS\Domains\DomainLookup\SearchResult;
 
     function connectreseller_Sync($params){
 
-        print_r($params);
-        exit;
+       
         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey']; 
