@@ -3,6 +3,8 @@
 
 use WHMCS\Domains\DomainLookup\ResultsList;
 use WHMCS\Domains\DomainLookup\SearchResult;
+use WHMCS\Domain\TopLevel\ImportItem;
+
 
 
     ini_set("display_errors","1");
@@ -1415,6 +1417,53 @@ use WHMCS\Domains\DomainLookup\SearchResult;
                 }
                 
                 $results->append($searchResult);
+            }
+            return $results;
+        } catch (\Exception $e) {
+            return array(
+                'error' => $e->getMessage(),
+            );
+        }
+    }
+
+
+    function connectreseller_GetTldPricing($params){
+
+        
+ 
+        $ApiKey = $params['APIKey'];
+        $query = 'APIKey='.$ApiKey;
+        $tldsyncurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/tldsync/?".$query;
+        $tldsyncurl = trim($tldsyncurl);
+        $tldsyncurl = str_replace ( ' ', '%20', $tldsyncurl);
+      //  print_r($tldsyncurl);exit;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $tldsyncurl);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $response = curl_exec($ch);
+        if($errno = curl_errno($ch)) {
+            $error_message = curl_strerror($errno);
+            echo "cURL error ({$errno}):\n {$error_message}";
+            exit;
+        }
+        curl_close($ch);
+        $results = new ResultsList();
+        $res =json_decode($response, true);
+       
+        try {
+            foreach ($res as $extension) {
+                // All the set methods can be chained and utilised together.
+
+                $item = (new ImportItem)
+                    ->setExtension($extension['tld'])
+                    ->setMinYears($extension['minPeriod'])
+                    ->setMaxYears($extension['maxPeriod'])
+                    ->setRegisterPrice($extension['registrationPrice'])
+                    ->setRenewPrice($extension['renewalPrice'])
+                    ->setTransferPrice($extension['transferPrice'])
+                    ->setCurrency($extension['currencyCode']);
+
+                 $results[] = $item;
             }
             return $results;
         } catch (\Exception $e) {
