@@ -36,8 +36,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -67,6 +66,8 @@ use WHMCS\Domain\TopLevel\ImportItem;
     }
 
     function connectreseller_SaveNameservers($params) {
+
+
         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey'];
@@ -78,7 +79,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $nameserver4 = $params["ns4"];
         $nameserver5 = $params["ns5"];
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
-        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
+        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomai/?".$query;
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
@@ -88,8 +89,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -114,8 +114,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
 
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
-                echo "cURL error ({$errno}):\n {$error_message}";
-                exit;
+               $values["error"] = $errno ."-".$error_message;
             }
             curl_close($ch);
             $updateRes =json_decode($updateResponse, true);
@@ -146,8 +145,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+           $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -180,8 +178,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
 
@@ -190,6 +187,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $domainNameId = $res["responseData"]['domainNameId'];
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld.'&domainNameId='.$domainNameId.'&isDomainLocked='.$DomainLockStatus;
         $manageUrl = trim("https://api.connectreseller.com/ConnectReseller/ESHOP/ManageDomainLock/?".$query);
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $manageUrl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -197,8 +195,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $manageResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+           $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $manageRes =json_decode($manageResponse, true);
@@ -214,19 +211,16 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $BrandId = $params['BrandId'];
         $websitename = $sld.'.'.$tld;
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
-
         $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -244,8 +238,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $viewDnsResponse = curl_exec($ch);
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
-                echo "cURL error ({$errno}):\n {$error_message}";
-                exit;
+                $values["error"] = $errno ."-".$error_message;
             }
             curl_close($ch);
             $viewDnsRes =json_decode($viewDnsResponse, true);
@@ -254,7 +247,9 @@ use WHMCS\Domain\TopLevel\ImportItem;
              }else{
                 $host = $viewDnsRes['responseData'];
                 foreach ($host as $v) {
-                    if(($v['recordType'] != 'SRV') && ($v['recordType'] != 'SOA')  && ($v['recordType'] != 'NS')){
+                    if(($v['recordType'] == 'SRV') || ($v['recordType'] == 'SOA')  || ($v['recordType'] == 'NS')){
+                        
+                    }else{
                         $values[] = array(
                             'hostname' => $v['recordName'],
                             'type'     => $v['recordType'],
@@ -275,8 +270,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $manageDnsResponse = curl_exec($ch);
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
-                echo "cURL error ({$errno}):\n {$error_message}";
-                exit;
+                $values["error"] = $errno ."-".$error_message;
             }
             curl_close($ch);
             $manageDnsRes =json_decode($manageDnsResponse, true);
@@ -294,8 +288,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $viewDnsResponse = curl_exec($ch);
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
-                    echo "cURL error ({$errno}):\n {$error_message}";
-                    exit;
+                    $values["error"] = $errno ."-".$error_message;
                 }
                 curl_close($ch);
                 $viewDnsRes =json_decode($viewDnsResponse, true);
@@ -327,19 +320,16 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $websitename = $sld.'.'.$tld;
         # Put your code to get the lock status here
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
-
         $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -355,12 +345,10 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $viewDnsUrl);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
             $viewDnsResponse = curl_exec($ch);
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
-                echo "cURL error ({$errno}):\n {$error_message}";
-                exit;
+                $values["error"] = $errno ."-".$error_message;
             }
             curl_close($ch);
             $viewDnsRes =json_decode($viewDnsResponse, true);
@@ -370,14 +358,21 @@ use WHMCS\Domain\TopLevel\ImportItem;
              }else{
                 $host = $viewDnsRes['responseData'];
                 foreach ($params['dnsrecords'] as $k => $v) {
-                    if (!empty($v['hostname']) && !empty($v['type']) && !empty($v['address'])) {                    
+                    if (!empty($v['hostname'])  && !empty($v['address'])) { 
                         if($v['recid'] !="" && $v['recid'] !=null){
                             $key = array_search($v['recid'], array_column($host, 'dnszoneRecordID'));
                             if($key != -1){
                                 $checkHost = $host[$key];
-                                if(($v['hostname'] !=$checkHost['recordName'] ) || ($v['type'] !=$checkHost['recordType']) || ($v['address'] !=$checkHost['recordContent']) || 
-                                    (($v['priority'] !=$checkHost['recordPriority']) && $v['type'] =="MX" )){
-                                    $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid'].'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
+
+                                if(($v['hostname'] !=$checkHost['recordName'] ) || ($v['type'] !=$checkHost['recordType']) || ($v['address'] !=$checkHost['recordContent']) || (($v['priority'] !=$checkHost['recordPriority']) && $v['type'] =="MX" )){
+                                    $hostName=$v['hostname'];
+                                    if($hostName == "@")
+                                        $hostName=$websitename;
+                                    else if($hostName == "*")
+                                        $hostName="*.".$websitename;
+                                    else if(strpos($hostName, $websitename) ===false)
+                                        $hostName=$hostName.".".$websitename;
+                                    $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid'].'&RecordName='.$hostName.'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
                                     $modifyDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyDNSRecord/?".$query;
                                     $modifyDnsUrl = trim($modifyDnsUrl);
                                     $modifyDnsUrl = str_replace ( ' ', '%20', $modifyDnsUrl);
@@ -387,40 +382,71 @@ use WHMCS\Domain\TopLevel\ImportItem;
                                     $viewDnsResponse = curl_exec($ch);
                                     if($errno = curl_errno($ch)) {
                                         $error_message = curl_strerror($errno);
-                                        echo "cURL error ({$errno}):\n {$error_message}";
-                                        exit;
+                                        $values["error"] = $errno ."-".$error_message;
                                     }
                                     curl_close($ch);
                                     $modifyDnsRes =json_decode($viewDnsResponse, true);
                                     if($modifyDnsRes["responseMsg"]['statusCode']!='200'){
                                         $values["error"] = $modifyDnsRes["responseMsg"]['statusCode']." - ".$modifyDnsRes["responseMsg"]['message'];
-                                    }else{
-                                        $values["error"] ="Record Updated Successfully";
                                     }
                                 }
                             }      
                         }else{
-                            $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&RecordName='.$v['hostname'].'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
-                            $addDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/AddDNSRecord/?".$query;
-                            $addDnsUrl = trim($addDnsUrl);
+                            $status= true;
+                            $hostName=$v['hostname'];
+                            if($hostName == "@")
+                                $hostName=$websitename;
+                            else if($hostName == "*")
+                                $hostName="*.".$websitename;
+                            else if(strpos($hostName, $websitename) ===false)
+                                $hostName=$hostName.".".$websitename;
+                            $key1 = array_search($hostName, array_column($host, 'recordName'));
+                            if($key1 != -1){
+                                $checkHost1 = $host[$key1];
+                                if ($v['address'] ==$checkHost1['recordContent'])
+                                    $status= false;
+                            }
+                            if($status){
+                                $query = 'APIKey='.$ApiKey.'&WebsiteId='.$websiteId.'&DNSZoneID='.$DNSZoneId.'&RecordName='.$hostName.'&RecordType='.$v['type'].'&RecordValue='.$v['address'].'&RecordTTL=43200'; 
+                                $addDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/AddDNSRecord/?".$query;
+                                $addDnsUrl = trim($addDnsUrl);
 
-                            $addDnsUrl = str_replace ( ' ', '%20', $addDnsUrl);
+                                $addDnsUrl = str_replace ( ' ', '%20', $addDnsUrl);
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $addDnsUrl);
+                                curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+                                $addDnsResponse = curl_exec($ch);
+                                if($errno = curl_errno($ch)) {
+                                    $error_message = curl_strerror($errno);
+                                    $values["error"] = $errno ."-".$error_message;
+                                }
+                                curl_close($ch);
+                                $addDnsRes =json_decode($viewDnsResponse, true);
+                                if($addDnsRes["responseMsg"]['statusCode']!='200'){
+                                    $values["error"] = $addDnsRes["responseMsg"]['statusCode']." - ".$addDnsRes["responseMsg"]['message'];
+                                }
+                            }
+                        }
+                    }else{
+                        if($v['recid'] !="" && $v['recid'] !=null){
+                            $query = 'APIKey='.$ApiKey.'&DNSZoneID='.$DNSZoneId.'&DNSZoneRecordID='.$v['recid']; 
+                            $deleteDnsUrl = "https://api.connectreseller.com/ConnectReseller/ESHOP/DeleteDNSRecord/?".$query;
+                            $deleteDnsUrl = trim($deleteDnsUrl);
+                            $deleteDnsUrl = str_replace ( ' ', '%20', $deleteDnsUrl);
                             $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, $addDnsUrl);
+                            curl_setopt($ch, CURLOPT_URL, $deleteDnsUrl);
                             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
                             $addDnsResponse = curl_exec($ch);
                             if($errno = curl_errno($ch)) {
                                 $error_message = curl_strerror($errno);
-                                echo "cURL error ({$errno}):\n {$error_message}";
-                                exit;
+                               $values["error"] = $errno ."-".$error_message;
                             }
                             curl_close($ch);
                             $addDnsRes =json_decode($viewDnsResponse, true);
                             if($addDnsRes["responseMsg"]['statusCode']!='200'){
                                 $values["error"] = $addDnsRes["responseMsg"]['statusCode']." - ".$addDnsRes["responseMsg"]['message'];
-                            }else{
-                                $values["error"] = " Record Added Successfully";
                             }
                         }
                     }
@@ -454,9 +480,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "$viewClienturl";
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
      
         curl_close($ch);
@@ -513,12 +537,8 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $addClientResponse = curl_exec($ch);
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
-                    echo "$viewClienturl";
-                    echo "cURL error ({$errno}):\n {$error_message}";
-                    exit;
+                    $values["error"] = $errno ."-".$error_message;
                 }
-                
-
                 $addClientRes=json_decode($addClientResponse,true);
                 if($addClientRes['responseMsg']['statusCode']!=200){
                     $values["error"] ="Domain Registration Failure: Unable to add client.";
@@ -536,8 +556,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $defaultRegistrantResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
-                        echo "cURL error ({$errno}):\n {$error_message}";
-                        exit;
+                        $values["error"] = $errno ."-".$error_message;
                     }
                     curl_close($ch);
                     $defaultRegistrantRes = json_decode($defaultRegistrantResponse,true);
@@ -568,8 +587,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $orderResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
-                        echo "cURL error ({$errno}):\n {$error_message}";
-                        exit;
+                        $values["error"] = $errno ."-".$error_message;
                     }
                     curl_close($ch);
                     $orderRes = json_decode($orderResponse,true);
@@ -607,8 +625,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $orderResponse = curl_exec($ch);
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
-                    echo "cURL error ({$errno}):\n {$error_message}";
-                    exit;
+                   $values["error"] = $errno ."-".$error_message;
                 }
                 curl_close($ch);        
                 $orderRes = json_decode($orderResponse,true);
@@ -747,8 +764,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                         $orderResponse = curl_exec($ch);
                         if($errno = curl_errno($ch)) {
                             $error_message = curl_strerror($errno);
-                            echo "cURL error ({$errno}):\n {$error_message}";
-                            exit;
+                            $values["error"] = $errno ."-".$error_message;
                         }
                         curl_close($ch);
                         $orderRes = json_decode($orderResponse,true);
@@ -795,8 +811,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $orderResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
-                        echo "cURL error ({$errno}):\n {$error_message}";
-                        exit;
+                        $values["error"] = $errno ."-".$error_message;
                     }
                     curl_close($ch);
                     $orderRes = json_decode($orderResponse,true);
@@ -842,8 +857,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -871,8 +885,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $response1 = curl_exec($ch);
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
-                    echo "cURL error ({$errno}):\n {$error_message}";
-                    exit;
+                    $values["error"] = $errno ."-".$error_message;
                 }
                 curl_close($ch);
                 $res1 =json_decode($response1, true);
@@ -910,8 +923,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -927,8 +939,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $contactDetailsResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $contactDetailsRes = json_decode($contactDetailsResponse, true);
@@ -967,8 +978,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -985,7 +995,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $query .='&City='.$params['contactdetails']['Registrant']['City'];
             $query .='&StateName='.$params['contactdetails']['Registrant']['State'];
             $query .='&CountryName='.$params['contactdetails']['Registrant']['Country'];
-            $query .='&PhoneNo_cc=91';
+            $query .='&PhoneNo_cc='.$params['contactdetails']['Registrant']['Phone Country Code'];
             $query .='&PhoneNo='.$params['contactdetails']['Registrant']['Phone Number'];
             $query .='&Zip='.$params['contactdetails']['Registrant']['Postcode'];
             $query .='&CompanyName='.$params['contactdetails']['Registrant']['Company Name'];
@@ -1002,8 +1012,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $updateResponse = curl_exec($ch);
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
-                echo "cURL error ({$errno}):\n {$error_message}";
-                exit;
+                $values["error"] = $errno ."-".$error_message;
             }
             curl_close($ch);
             $updateRes =json_decode($updateResponse, true);
@@ -1036,8 +1045,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -1071,8 +1079,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -1087,8 +1094,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $addChildResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $addChildRes =json_decode($addChildResponse, true);
@@ -1124,8 +1130,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -1141,8 +1146,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $modifyChildResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $modifyChildRes =json_decode($modifyChildResponse, true);
@@ -1180,8 +1184,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $res =json_decode($response, true);
@@ -1198,8 +1201,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $deleteChildResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $deleteChildRes =json_decode($deleteChildResponse, true);
@@ -1240,8 +1242,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
 
@@ -1256,8 +1257,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $manageResponse = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
         $manageRes =json_decode($manageResponse, true);
@@ -1281,8 +1281,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         $result = array();
         $res =json_decode($response, true);
@@ -1382,8 +1381,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+            $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
          $results = new ResultsList();
@@ -1436,15 +1434,15 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $tldsyncurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/tldsync/?".$query;
         $tldsyncurl = trim($tldsyncurl);
         $tldsyncurl = str_replace ( ' ', '%20', $tldsyncurl);
-      //  print_r($tldsyncurl);exit;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $tldsyncurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
-            echo "cURL error ({$errno}):\n {$error_message}";
-            exit;
+           return array(
+                'error' => "Authentication Error",
+            );
         }
         curl_close($ch);
         $results = new ResultsList();
