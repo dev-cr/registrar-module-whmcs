@@ -79,7 +79,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $nameserver4 = $params["ns4"];
         $nameserver5 = $params["ns5"];
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
-        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomai/?".$query;
+        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
@@ -93,6 +93,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
         curl_close($ch);
         $res =json_decode($response, true);
+       
         $DomainNameID = $res["responseData"]['domainNameId'];
         # Put your code to save the nameservers here
         if($res["responseData"]['isDomainLocked']!='True'){
