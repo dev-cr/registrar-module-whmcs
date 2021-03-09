@@ -2,7 +2,7 @@
 
 ***
 
-##### [ReleaseNotes](https://github.com/namecheap/domains-whmcs/wiki/Changelog)
+##### [ReleaseNotes]
 
 connectreseller.com WHMCS Registrar plug-in is an open-source plug-in that is distributed free of charge. It focuses on integrating ConnectReseller as a domain registrar at WHMCS.
 
