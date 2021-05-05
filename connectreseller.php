@@ -67,7 +67,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
 
     function connectreseller_SaveNameservers($params) {
 
-
         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey'];
@@ -85,15 +84,13 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
             $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
-        $res =json_decode($response, true);
-       
+        $res =json_decode($response, true);       
         $DomainNameID = $res["responseData"]['domainNameId'];
         # Put your code to save the nameservers here
         if($res["responseData"]['isDomainLocked']!='True'){
@@ -102,17 +99,14 @@ use WHMCS\Domain\TopLevel\ImportItem;
             if($nameserver2 != "") $query .='&nameServer2='.$nameserver2;
             if($nameserver3 != "") $query .='&nameServer3='.$nameserver3;
             if($nameserver4 != "") $query .='&nameServer4='.$nameserver4;
-            if($nameserver5 != "") $query .='&nameServer5='.$nameserver5;
-          
+            if($nameserver5 != "") $query .='&nameServer5='.$nameserver5;          
             $updateDomainurl ="https://api.connectreseller.com/ConnectReseller/ESHOP/UpdateNameServer/?".$query;
             $updateDomainurl = trim($updateDomainurl);
             $updateDomainurl = str_replace ( ' ', '%20', $updateDomainurl);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $updateDomainurl);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
             $updateResponse = curl_exec($ch);
-
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
                $values["error"] = $errno ."-".$error_message;
@@ -135,14 +129,12 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $BrandId = $params['BrandId'];
         $websitename = $sld.'.'.$tld;
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
-
         $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
@@ -183,8 +175,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
         curl_close($ch);
 
-        $res =json_decode($response, true);
-       
+        $res =json_decode($response, true);       
         $domainNameId = $res["responseData"]['domainNameId'];
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld.'&domainNameId='.$domainNameId.'&isDomainLocked='.$DomainLockStatus;
         $manageUrl = trim("https://api.connectreseller.com/ConnectReseller/ESHOP/ManageDomainLock/?".$query);
@@ -416,7 +407,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
                                 $ch = curl_init();
                                 curl_setopt($ch, CURLOPT_URL, $addDnsUrl);
                                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                                 $addDnsResponse = curl_exec($ch);
                                 if($errno = curl_errno($ch)) {
                                     $error_message = curl_strerror($errno);
@@ -482,11 +472,9 @@ use WHMCS\Domain\TopLevel\ImportItem;
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
             $values["error"] = $errno ."-".$error_message;
-        }
-     
+        }    
         curl_close($ch);
         $res =json_decode($response, true);
-
         $msgResult = array_key_exists ( "responseMsg" ,$res );
         if($msgResult){
             if($res['responseMsg']['statusCode']!='200'){
@@ -531,7 +519,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $addClienturl ="https://api.connectreseller.com/ConnectReseller/ESHOP/AddClient?".trim($query);
                 $addClienturl = trim($addClienturl);
                 $addClienturl = str_replace ( ' ', '%20', $addClienturl);
-                
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $addClienturl);
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -547,13 +534,11 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $res = json_decode($addClientResponse);
                     $UserName = $addClientRes['responseData']['userName'];
                     $CustomerID = $addClientRes['responseData']['clientId'];
-
                     $query = 'APIKey='.$ApiKey.'&Id='.$CustomerID;
                     $defaultRegistranturl = "https://api.connectreseller.com/ConnectReseller/ESHOP/DefaultRegistrantContact/?".$query;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $defaultRegistranturl);
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                     $defaultRegistrantResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
@@ -568,11 +553,42 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     }
                     $regperiod=$params["regperiod"];
                     $websitename= $sld.'.' .$tld;
+                    if($tld =="us"){
+                        if($params["additionalfields"]["Nexus Category"]=="C31" 
+                            || $params["additionalfields"]["Nexus Category"]=="C32") {
+                           $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                        }else{
+                            $NexusCategory=$params["additionalfields"]["Nexus Category"];
+                        }
+                        if($params["additionalfields"]["Application Purpose"] =="Non-profit business"){
+                            $appPurpose ="P2";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Club"){
+                            $appPurpose ="P1";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Association"){
+                            $appPurpose ="P3";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Religious Organization"){
+                            $appPurpose ="P3";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Personal Use"){
+                            $appPurpose ="P3";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Educational purposes"){
+                            $appPurpose ="P4";
+                        }else if($params["additionalfields"]["Application Purpose"] =="Government purposes"){
+                            $appPurpose ="P5";
+                        } else{
+                            $appPurpose ="P2";
+                        }
+                    }
                     $query = 'APIKey='.$ApiKey.'&Id='.$CustomerID.'&ProductType=1&Websitename='.$websitename.'&Duration='.$regperiod.'&IsWhoisProtection='.$IsWhoisProtection;
                     if($nameserver1 != "") $query .='&ns1='.$nameserver1;
                     if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                     if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                     if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                    if($tld =="us"){
+                        $query .='&appPurpose='.$appPurpose;
+                        $query .='&nexusCategory='.$NexusCategory;
+                        $isUs=true;
+                        $query .='&isUs='.$isUs;
+                    }
                     $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
                     $query .='&isEnablePremium='.$premiumEnabled;
                     if (!(!isset($CouponCode) || trim($CouponCode) === '')){
@@ -584,7 +600,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $orderUrl);
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                     $orderResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
@@ -604,25 +619,53 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $query = 'APIKey='.$ApiKey.'&Id='.$CustomerID;           
                 $regperiod=$params["regperiod"];
                 $websitename= $sld.'.' .$tld;
+                if($tld =="us"){
+                    if($params["additionalfields"]["Nexus Category"]=="C31" 
+                        || $params["additionalfields"]["Nexus Category"]=="C32") {
+                       $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                    }else{
+                        $NexusCategory=$params["additionalfields"]["Nexus Category"];
+                    }
+                    if($params["additionalfields"]["Application Purpose"] =="Non-profit business"){
+                        $appPurpose ="P2";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Club"){
+                        $appPurpose ="P1";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Association"){
+                        $appPurpose ="P3";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Religious Organization"){
+                        $appPurpose ="P3";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Personal Use"){
+                        $appPurpose ="P3";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Educational purposes"){
+                        $appPurpose ="P4";
+                    }else if($params["additionalfields"]["Application Purpose"] =="Government purposes"){
+                        $appPurpose ="P5";
+                    }else{
+                       $appPurpose ="P1"; 
+                    }
+                }
                 $query = 'APIKey='.$ApiKey.'&Id='.$CustomerID.'&ProductType=1&Websitename='.$websitename.'&Duration='.$regperiod.'&IsWhoisProtection='.$IsWhoisProtection;
                 if($nameserver1 != "") $query .='&ns1='.$nameserver1;
                 if($nameserver2 != "") $query .='&ns2='.$nameserver2;
                 if($nameserver3 != "") $query .='&ns3='.$nameserver3;
                 if($nameserver4 != "") $query .='&ns4='.$nameserver4;
+                if($tld =="us"){
+                    $query .='&appPurpose='.$appPurpose;
+                    $query .='&nexusCategory='.$NexusCategory;
+                    $isUs=true;
+                    $query .='&isUs='.$isUs;
+                }
                 $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
                 $query .='&isEnablePremium='.$premiumEnabled;
                 if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                    $query .= '&couponCode='.$CouponCode;
                 }
-                   
                 $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/domainorder/?".$query;
                 $orderUrl = trim($orderUrl);
                 $orderUrl = str_replace ( ' ', '%20', $orderUrl);
-
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $orderUrl);
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                 $orderResponse = curl_exec($ch);
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
@@ -664,11 +707,8 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $viewClienturl = str_replace ( ' ', '%20', $viewClienturl);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewClienturl);
-
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
-
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
             echo "cURL error ({$errno}):\n {$error_message}";
@@ -676,11 +716,9 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
         curl_close($ch);
         $res =json_decode($response, true);
-        
         $msgResult = array_key_exists ( "responseMsg" ,$res );
         if($msgResult){
-            if($res["responseMsg"]['statusCode']!='200'){
-                
+            if($res["responseMsg"]['statusCode']!='200'){ 
                 $UserName = $params["email"];
                 $str ="cr123456";
                 $Password =str_shuffle($str);
@@ -717,6 +755,40 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $accountingcurrencysymbol='INR';
                 }
                 $query="APIKey=".urlencode($ApiKey);
+                if($tld =="us"){
+                    if($params["additionalfields"]["Nexus Category"]=="C31" 
+                        || $params["additionalfields"]["Nexus Category"]=="C32") {
+                       $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                    }else{
+                        $NexusCategory=$params["additionalfields"]["Nexus Category"];
+                    }
+                    if($params["additionalfields"]["Application Purpose"] =="Non-profit business"){
+                        $appPurpose ="P2";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Club"){
+                        $appPurpose ="P1";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Association"){
+                        $appPurpose ="P3";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Religious Organization"){
+                        $appPurpose ="P3";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Personal Use"){
+                        $appPurpose ="P3";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Educational purposes"){
+                        $appPurpose ="P4";
+
+                    }else if($params["additionalfields"]["Application Purpose"] =="Government purposes"){
+                        $appPurpose ="P5";
+                    }    
+                    $query .='&appPurpose='.$appPurpose;
+                    $query .='&nexusCategory='.$NexusCategory;
+                    $isUs=true;
+                    $query .='&isUs='.$isUs;
+
+                }
                 $query.="&UserName=".urlencode($RegistrantEmailAddress);
                 $query.="&Password=".urlencode($Password)."&CompanyName=".urlencode($companyname)."&FirstName=".urlencode($firstname)."&Address1=".urlencode($address1.$address2)."&City=".urlencode($city) ."&StateName=".$state."&CountryName=".$countryname ."&Zip=".$postcode."&PhoneNo_cc=".$phonecc."&PhoneNo=".$phonenumber;
                 $addClienturl ="https://api.connectreseller.com/ConnectReseller/ESHOP/AddClient?".trim($query);
@@ -725,9 +797,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $addClienturl);
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                 $addClientResponse = curl_exec($ch);
-               
                 if($errno = curl_errno($ch)) {
                     $error_message = curl_strerror($errno);
                     echo "cURL error ({$errno}):\n {$error_message}";
@@ -749,13 +819,9 @@ use WHMCS\Domain\TopLevel\ImportItem;
                         );
                         $query =http_build_query($dataArr);
                         $query = $query.'&IsWhoisProtection='.$IsWhoisProtection;
-                        // $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
-                        // $query .='&isEnablePremium='.$premiumEnabled;
                         if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                            $query .= '&couponCode='.$CouponCode;
                         }
-
-
                         $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
                         $orderUrl = trim($orderUrl);
                         $orderUrl = str_replace ( ' ', '%20', $orderUrl);                   
@@ -794,21 +860,49 @@ use WHMCS\Domain\TopLevel\ImportItem;
                         'AuthCode' => $authCode
                     );
                     $query =http_build_query($dataArr);
-                    // $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
-                    // $query .='&isEnablePremium='.$premiumEnabled;
                     if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                        $query .= '&couponCode='.$CouponCode;
                     }
+                    if($tld =="us"){
+                        if($params["additionalfields"]["Nexus Category"]=="C31" 
+                            || $params["additionalfields"]["Nexus Category"]=="C32") {
+                           $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                        }else{
+                            $NexusCategory=$params["additionalfields"]["Nexus Category"];
+                        }
+                        if($params["additionalfields"]["Application Purpose"] =="Non-profit business"){
+                            $appPurpose ="P2";
 
+                        }else if($params["additionalfields"]["Application Purpose"] =="Club"){
+                            $appPurpose ="P1";
+
+                        }else if($params["additionalfields"]["Application Purpose"] =="Association"){
+                            $appPurpose ="P3";
+
+                        }else if($params["additionalfields"]["Application Purpose"] =="Religious Organization"){
+                            $appPurpose ="P3";
+
+                        }else if($params["additionalfields"]["Application Purpose"] =="Personal Use"){
+                            $appPurpose ="P3";
+
+                        }else if($params["additionalfields"]["Application Purpose"] =="Educational purposes"){
+                            $appPurpose ="P4";
+
+                        }else if($params["additionalfields"]["Application Purpose"] =="Government purposes"){
+                            $appPurpose ="P5";
+                        }
+                        $query .='&appPurpose='.$appPurpose;
+                        $query .='&nexusCategory='.$NexusCategory;
+                        $isUs=true;
+                        $query .='&isUs='.$isUs;
+                    }
                     $orderUrl ="https://api.connectreseller.com/ConnectReseller/ESHOP/TransferOrder/?".$query;
-                   
                     $orderUrl = trim($orderUrl);
                     $orderUrl = str_replace ( ' ', '%20', $orderUrl);
                     $query = $query.'&IsWhoisProtection='.$IsWhoisProtection;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $orderUrl);
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
                     $orderResponse = curl_exec($ch);
                     if($errno = curl_errno($ch)) {
                         $error_message = curl_strerror($errno);
@@ -854,7 +948,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
@@ -864,7 +957,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $res =json_decode($response, true);
         $msgResult = array_key_exists ( "responseMsg" ,$res );
         if($msgResult){
-
             if($res["responseMsg"]['statusCode']!='200'){
                 $values["error"] = $res["responseMsg"]['message'];  
             }else{ 
@@ -875,7 +967,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 if (!(!isset($CouponCode) || trim($CouponCode) === '')){
                    $query .= '&couponCode='.$CouponCode;
                 }
-
                 $renewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/renewalorder/?".$query;
                 $renewDomainurl = trim($renewDomainurl);
                 $renewDomainurl = str_replace ( ' ', '%20', $renewDomainurl);
@@ -907,7 +998,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
     }
     function connectreseller_GetContactDetails($params){
 
-        $tld = $params["tld"];
+         $tld = $params["tld"];
         $sld = $params["sld"];
         $ApiKey = $params['APIKey'];    
         $BrandId = $params['BrandId'];
@@ -929,15 +1020,19 @@ use WHMCS\Domain\TopLevel\ImportItem;
         curl_close($ch);
         $res =json_decode($response, true);
 
-        $RegistrantContactId = $res["responseData"]['registrantContactId'];
+        //$RegistrantContactId =str_replace($res["responseData"]['registrantContactId'],"OR_","");
+        $RegistrantContactId = substr($res["responseData"]['registrantContactId'], 3);  // 
+        $AdminContactId = substr($res["responseData"]['adminContactId'], 3);  // 
+        $BillingContactId = substr($res["responseData"]['billingContactId'], 3);  // 
+        $TechnicalContactId = substr($res["responseData"]['technicalContactId'], 3); 
         $GetContactDetails = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$RegistrantContactId;
         $GetContactDetails = trim($GetContactDetails);
         $GetContactDetails = str_replace ( ' ', '%20', $GetContactDetails);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $GetContactDetails);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $contactDetailsResponse = curl_exec($ch);
+
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
             $values["error"] = $errno ."-".$error_message;
@@ -951,15 +1046,113 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $result['Address2'] = $contactDetailsRes["responseData"]['address2'];;
         $result['Address3'] = $contactDetailsRes["responseData"]['address3'];
         $result['City'] = $contactDetailsRes["responseData"]['city'];
-        $result['State'] = "Maharashtra";
-        $result['Country'] = "India";
+        $result['State'] = $contactDetailsRes["responseData"]['stateName'];
+        $result['Country'] = $contactDetailsRes["responseData"]['countryName'];
         $result['Zip'] = $contactDetailsRes["responseData"]['postalCode'];
         $result['PhoneNo_CountryCode'] = $contactDetailsRes["responseData"]['phoneCode'];
         $result['PhoneNo'] = $contactDetailsRes["responseData"]['phoneNo'];
         $result['PhoneNo'] = substr($result['PhoneNo'], 0, 10);
         $result['emailaddr'] = $contactDetailsRes["responseData"]['emailAddress'];
-        $values['Registrant'] = array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
+        $values['Registrant'] = array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  ); // 
+        if($RegistrantContactId === $TechnicalContactId){
+            $values['Technical']= array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
+        }else{
+            $GetContactDetails1 = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$TechnicalContactId;
+            $GetContactDetails1 = trim($GetContactDetails1);
+            $GetContactDetails1 = str_replace ( ' ', '%20', $GetContactDetails1);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $GetContactDetails1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            $contactDetailsResponse1 = curl_exec($ch);
+            if($errno = curl_errno($ch)) {
+                $error_message = curl_strerror($errno);
+                $values["error"] = $errno ."-".$error_message;
+            }
+            curl_close($ch);
+            $contactDetailsRes1 = json_decode($contactDetailsResponse1, true);
+            $result1 = array();
+            $result1['name'] = $contactDetailsRes1["responseData"]['name'];
+            $result1['Company'] = $contactDetailsRes1["responseData"]['companyName'];
+            $result1['Address1'] = $contactDetailsRes1["responseData"]['address1'];
+            $result1['Address2'] = $contactDetailsRes1["responseData"]['address2'];;
+            $result1['Address3'] = $contactDetailsRes1["responseData"]['address3'];
+            $result1['City'] = $contactDetailsRes1["responseData"]['city'];
+            $result1['State'] = $contactDetailsRes1["responseData"]['stateName'];
+            $result1['Country'] = $contactDetailsRes1["responseData"]['countryName'];
+            $result1['Zip'] = $contactDetailsRes1["responseData"]['postalCode'];
+            $result1['PhoneNo_CountryCode'] = $contactDetailsRes1["responseData"]['phoneCode'];
+            $result1['PhoneNo'] = $contactDetailsRes1["responseData"]['phoneNo'];
+            $result1['PhoneNo'] = substr($result1['PhoneNo'], 0, 10);
+            $result1['emailaddr'] = $contactDetailsRes1["responseData"]['emailAddress'];
+            $values['Technical'] = array( 'Full Name' => $result1['name'], 'Email' => $result1['emailaddr'], 'Company Name' => $result1['Company'], 'Address 1' => $result1['Address1'], 'Address 2' => $result1['Address2'], 'Address 3' => $result1['Address3'], 'City' => $result1['City'], 'State' => $result1['State'], 'Country' => $result1['Country'], 'Postcode' => $result1['Zip'], 'Phone Number' => $result1['PhoneNo_CountryCode'] . $result1['PhoneNo']  );
+        }
+
+        if($RegistrantContactId === $BillingContactId){
+            $values['Billing']= array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
+        }else{
+            $GetContactDetails2 = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$BillingContactId;
+            $GetContactDetails2 = trim($GetContactDetails2);
+            $GetContactDetails2 = str_replace ( ' ', '%20', $GetContactDetails2);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $GetContactDetails2);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            $contactDetailsResponse2 = curl_exec($ch);
+            if($errno = curl_errno($ch)) {
+                $error_message = curl_strerror($errno);
+                $values["error"] = $errno ."-".$error_message;
+            }
+            curl_close($ch);
+            $contactDetailsRes2 = json_decode($contactDetailsResponse2, true);
+            $result2 = array();
+            $result2['name'] = $contactDetailsRes2["responseData"]['name'];
+            $result2['Company'] = $contactDetailsRes2["responseData"]['companyName'];
+            $result2['Address2'] = $contactDetailsRes2["responseData"]['address2'];
+            $result2['Address2'] = $contactDetailsRes2["responseData"]['address2'];;
+            $result2['Address3'] = $contactDetailsRes2["responseData"]['address3'];
+            $result2['City'] = $contactDetailsRes2["responseData"]['city'];
+            $result2['State'] = $contactDetailsRes2["responseData"]['stateName'];
+            $result2['Country'] = $contactDetailsRes2["responseData"]['countryName'];
+            $result2['Zip'] = $contactDetailsRes2["responseData"]['postalCode'];
+            $result2['PhoneNo_CountryCode'] = $contactDetailsRes2["responseData"]['phoneCode'];
+            $result2['PhoneNo'] = $contactDetailsRes2["responseData"]['phoneNo'];
+            $result2['PhoneNo'] = substr($result2['PhoneNo'], 0, 20);
+            $result2['emailaddr'] = $contactDetailsRes2["responseData"]['emailAddress'];
+            $values['Billing'] = array( 'Full Name' => $result2['name'], 'Email' => $result2['emailaddr'], 'Company Name' => $result2['Company'], 'Address 2' => $result2['Address2'], 'Address 2' => $result2['Address2'], 'Address 3' => $result2['Address3'], 'City' => $result2['City'], 'State' => $result2['State'], 'Country' => $result2['Country'], 'Postcode' => $result2['Zip'], 'Phone Number' => $result2['PhoneNo_CountryCode'] . $result2['PhoneNo']  ); 
+        }
         
+        if($RegistrantContactId === $AdminContactId){
+            $values['Admin']= array( 'Full Name' => $result['name'], 'Email' => $result['emailaddr'], 'Company Name' => $result['Company'], 'Address 1' => $result['Address1'], 'Address 2' => $result['Address2'], 'Address 3' => $result['Address3'], 'City' => $result['City'], 'State' => $result['State'], 'Country' => $result['Country'], 'Postcode' => $result['Zip'], 'Phone Number' => $result['PhoneNo_CountryCode'] . $result['PhoneNo']  );
+        }else{
+
+           $GetContactDetails3 = 'https://api.connectreseller.com/ConnectReseller/ESHOP/ViewRegistrant?APIKey='.$ApiKey.'&RegistrantContactId='.$AdminContactId;
+            $GetContactDetails3 = trim($GetContactDetails3);
+            $GetContactDetails3 = str_replace ( ' ', '%30', $GetContactDetails3);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $GetContactDetails3);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            $contactDetailsResponse3 = curl_exec($ch);
+            if($errno = curl_errno($ch)) {
+                $error_message = curl_strerror($errno);
+                $values["error"] = $errno ."-".$error_message;
+            }
+            curl_close($ch);
+            $contactDetailsRes3 = json_decode($contactDetailsResponse3, true);
+            $result3 = array();
+            $result3['name'] = $contactDetailsRes3["responseData"]['name'];
+            $result3['Company'] = $contactDetailsRes3["responseData"]['companyName'];
+            $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];
+            $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];;
+            $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];
+            $result3['City'] = $contactDetailsRes3["responseData"]['city'];
+            $result3['State'] = $contactDetailsRes3["responseData"]['stateName'];
+            $result3['Country'] = $contactDetailsRes3["responseData"]['countryName'];
+            $result3['Zip'] = $contactDetailsRes3["responseData"]['postalCode'];
+            $result3['PhoneNo_CountryCode'] = $contactDetailsRes3["responseData"]['phoneCode'];
+            $result3['PhoneNo'] = $contactDetailsRes3["responseData"]['phoneNo'];
+            $result3['PhoneNo'] = substr($result3['PhoneNo'], 0, 30);
+            $result3['emailaddr'] = $contactDetailsRes3["responseData"]['emailAddress'];
+            $values['Admin'] = array( 'Full Name' => $result3['name'], 'Email' => $result3['emailaddr'], 'Company Name' => $result3['Company'], 'Address 3' => $result3['Address3'], 'Address 3' => $result3['Address3'], 'Address 3' => $result3['Address3'], 'City' => $result3['City'], 'State' => $result3['State'], 'Country' => $result3['Country'], 'Postcode' => $result3['Zip'], 'Phone Number' => $result3['PhoneNo_CountryCode'] . $result3['PhoneNo']  );
+        }
         return $values;
     }
     function connectreseller_SaveContactDetails($params){
@@ -1001,15 +1194,12 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $query .='&Zip='.$params['contactdetails']['Registrant']['Postcode'];
             $query .='&CompanyName='.$params['contactdetails']['Registrant']['Company Name'];
             $query .='&domainId='.$res["responseData"]['domainNameId'];
-            
             $SaveContactDetails ="https://api.connectreseller.com/ConnectReseller/ESHOP/ModifyRegistrantContact_whmcs?".$query;
-            
             $SaveContactDetails = trim($SaveContactDetails);
             $SaveContactDetails = str_replace ( ' ', '%20', $SaveContactDetails);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $SaveContactDetails);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
             $updateResponse = curl_exec($ch);
             if($errno = curl_errno($ch)) {
                 $error_message = curl_strerror($errno);
@@ -1036,7 +1226,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $websitename = $sld.'.'.$tld;
         $query = 'APIKey='.$ApiKey.'&websiteName='.$websitename;
         $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
-        
         $viewDomainurl = trim($viewDomainurl);
         $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
         $ch = curl_init();
@@ -1068,7 +1257,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $websitename =$params['domainname'];
         $ipaddress = $params["ipaddress"];
         $Server = $params["nameserver"];
-
         $query = 'APIKey='.$ApiKey.'&websiteName='.$sld.'.'.$tld;
         $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/ViewDomain/?".$query;
         $viewDomainurl = trim($viewDomainurl);
@@ -1076,7 +1264,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
         $response = curl_exec($ch);
         if($errno = curl_errno($ch)) {
             $error_message = curl_strerror($errno);
@@ -1104,8 +1291,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $values["error"] = $addChildRes["responseData"]['msgCode']." - Invalid IP Address";
                 }else{
                     $values["error"] = $addChildRes["responseData"]['msgCode']." - Nameserver already exits";
-                }
-            
+                }  
         }else{
             $values["error"]='Created Successfully '.$Server;
         }
@@ -1151,7 +1337,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
         curl_close($ch);
         $modifyChildRes =json_decode($modifyChildResponse, true);
-
         if($modifyChildRes["responseMsg"]['statusCode']!='200'){
             if($modifyChildRes["responseData"]['msgCode']==2303){
                 $values["error"] = $modifyChildRes["responseData"]['msgCode']." - Nameserver does not exist";
@@ -1159,8 +1344,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 $values["error"] = $modifyChildRes["responseData"]['msgCode']." - Domain is locked";
             }else{
                 $values["error"] = $modifyChildRes["responseData"]['msgCode']." - Invalid Ipaddress ";
-            }
-            
+            } 
         }else{
             $values["error"]='Updated Successfully '.$Server;
         }
@@ -1355,7 +1539,6 @@ use WHMCS\Domain\TopLevel\ImportItem;
     }
 
     function connectreseller_CheckAvailability($params){
-
         
         $userIdentifier = $params['API Username'];
         $apiKey = $params['API Key'];
@@ -1385,7 +1568,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $values["error"] = $errno ."-".$error_message;
         }
         curl_close($ch);
-         $results = new ResultsList();
+        $results = new ResultsList();
         $res =json_decode($response, true);
         try {
             foreach ($res["responseData"] as $domain) {
@@ -1427,9 +1610,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
 
 
     function connectreseller_GetTldPricing($params){
-
-        
- 
+    
         $ApiKey = $params['APIKey'];
         $query = 'APIKey='.$ApiKey;
         $tldsyncurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/tldsync/?".$query;
@@ -1447,12 +1628,9 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
         curl_close($ch);
         $results = new ResultsList();
-        $res =json_decode($response, true);
-       
+        $res =json_decode($response, true);      
         try {
             foreach ($res as $extension) {
-                // All the set methods can be chained and utilised together.
-
                 $item = (new ImportItem)
                     ->setExtension($extension['tld'])
                     ->setMinYears($extension['minPeriod'])
