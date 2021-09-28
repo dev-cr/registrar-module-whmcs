@@ -290,6 +290,8 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     $host = $viewDnsRes['responseData'];
                     foreach ($host as $v) {
                         if(($v['recordType'] == 'SRV') || ($v['recordType'] == 'SOA')  || ($v['recordType'] == 'NS')){
+                        
+                        }else{
                             $values[] = array(
                                 'hostname' => $v['recordName'],
                                 'type'     => $v['recordType'],
@@ -297,7 +299,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                                 'priority' => $v['recordPriority'],
                                 'recid' =>$v['dnszoneRecordID']
                             );
-                        } 
+                        }
                     }
                 }
             }
@@ -556,7 +558,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                     if($tld =="us"){
                         if($params["additionalfields"]["Nexus Category"]=="C31" 
                             || $params["additionalfields"]["Nexus Category"]=="C32") {
-                           $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                           $NexusCategory=$params["additionalfields"]["Nexus Category"]."/CC";
                         }else{
                             $NexusCategory=$params["additionalfields"]["Nexus Category"];
                         }
@@ -622,7 +624,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                 if($tld =="us"){
                     if($params["additionalfields"]["Nexus Category"]=="C31" 
                         || $params["additionalfields"]["Nexus Category"]=="C32") {
-                       $NexusCategory=$params["additionalfields"]["Nexus Category"]+"/CC";
+                       $NexusCategory=$params["additionalfields"]["Nexus Category"]."/CC";
                     }else{
                         $NexusCategory=$params["additionalfields"]["Nexus Category"];
                     }
@@ -1140,8 +1142,8 @@ use WHMCS\Domain\TopLevel\ImportItem;
             $result3 = array();
             $result3['name'] = $contactDetailsRes3["responseData"]['name'];
             $result3['Company'] = $contactDetailsRes3["responseData"]['companyName'];
-            $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];
-            $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];;
+            $result3['Address1'] = $contactDetailsRes3["responseData"]['address3'];
+            $result3['Address2'] = $contactDetailsRes3["responseData"]['address3'];;
             $result3['Address3'] = $contactDetailsRes3["responseData"]['address3'];
             $result3['City'] = $contactDetailsRes3["responseData"]['city'];
             $result3['State'] = $contactDetailsRes3["responseData"]['stateName'];
@@ -1643,7 +1645,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
                  $results[] = $item;
             }
             return $results;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return array(
                 'error' => $e->getMessage(),
             );
