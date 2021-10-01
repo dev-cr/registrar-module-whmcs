@@ -17,7 +17,14 @@ use WHMCS\Domain\TopLevel\ImportItem;
         );
         return $configarray;
     }
-
+    function connectreseller_MetaData() {
+        
+        return array(
+            'DisplayName' => 'connectreseller',
+            'APIVersion' => '1.1',
+            'NonLinearRegistrationPricing' => TRUE,
+        );
+    }
     function connectreseller_GetNameservers($params) {
         $tld = $params["tld"];
         $sld = $params["sld"];
