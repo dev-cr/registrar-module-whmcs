@@ -1659,7 +1659,7 @@ use WHMCS\Domain\TopLevel\ImportItem;
         }
     }
 
-unction connectreseller_GetDomainSuggestions($params){
+function connectreseller_GetDomainSuggestions($params){
         $apiKey = $params['API Key'];
         $searchTerm = $params['searchTerm'];
         $tldsToInclude = $params['tldsToInclude'];
