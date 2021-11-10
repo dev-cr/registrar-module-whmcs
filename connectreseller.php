@@ -1658,4 +1658,62 @@ use WHMCS\Domain\TopLevel\ImportItem;
             );
         }
     }
+
+unction connectreseller_GetDomainSuggestions($params){
+        $apiKey = $params['API Key'];
+        $searchTerm = $params['searchTerm'];
+        $tldsToInclude = $params['tldsToInclude'];
+        $premiumEnabled = (bool) $params['premiumEnabled']==true?1:0;
+        $tld = $params["tld"];
+        $sld = $params["sld"];
+        $ApiKey = $params['APIKey'];   
+        $BrandId = $params['BrandId'];
+        $websitename = $sld.'.'.$tld;
+        $tldsToInclude =implode(",",$params['tldsToInclude']);
+        $query = 'APIKey='.$ApiKey.'&searchString='.$sld.'&tldsInclude='.$tldsToInclude.'&premiumEnable='.$premiumEnabled;
+        $viewDomainurl = "https://api.connectreseller.com/ConnectReseller/ESHOP/whmcscheckdomain/?".$query;
+        $viewDomainurl = trim($viewDomainurl);
+        $viewDomainurl = str_replace ( ' ', '%20', $viewDomainurl);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $viewDomainurl);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        $response = curl_exec($ch);
+        if($errno = curl_errno($ch)) {
+            $error_message = curl_strerror($errno);
+            $values["error"] = $errno ."-".$error_message;
+        }
+        curl_close($ch);
+        $results = new ResultsList();
+        $res =json_decode($response, true);
+        try {
+            foreach ($res["responseData"] as $domain) {
+                $arr =explode(".",$domain['domain'],2);
+               
+               
+                $status = SearchResult::STATUS_REGISTERED;
+               
+                $searchResult->setStatus($status);
+                if($params['premiumEnabled']){
+                    if ($domain['premium']) {
+                        $searchResult->setPremiumDomain(true);
+                        $searchResult->setPremiumCostPricing(
+                            array(
+                                'register' => $domain['price'],
+                                'renew' => $domain['renewalPrice'],
+                                'CurrencyCode' => $domain['currencyCode'],
+                            )
+                        );
+                    }
+                }
+                $results->append($searchResult);
+            }
+            return $results;
+        } catch (Exception $e) {
+            return array(
+                'error' => $e->getMessage(),
+            );
+        }
+
+    }
+
 ?>
